@@ -1,0 +1,147 @@
+# Research Crew Configuration
+version: 1.0
+name: ResearchCrew
+description: "A crew of agents for researching, analyzing, summarizing, and formatting information on any topic."
+
+agents:
+  - id: researcher
+    name: Researcher
+    description: "Expert at discovering relevant information from various sources"
+    role: "Find comprehensive information on the given topic"
+    goal: "Gather accurate and comprehensive information on specific topics"
+    backstory: "An experienced research specialist with a knack for finding valuable information across various domains."
+    verbose: true
+    llm:
+      provider: ollama
+      model_name: mistral
+      temperature: 0.7
+    tools: []
+    prompt_template: |
+      {
+        "role": "Researcher",
+        "goal": "Find comprehensive information on the given topic",
+        "instructions": "Your task is to gather relevant information on '{{topic}}'. Focus on key concepts, recent developments, major applications, and challenges in this field. Be thorough but prioritize quality of information over quantity.",
+        "constraints": [
+          "Ensure information is factual and up-to-date",
+          "Cover multiple perspectives on the topic",
+          "Organize information in a logical structure"
+        ],
+        "output_format": "JSON with the following keys: key_concepts, recent_developments, applications, challenges"
+      }
+
+  - id: analyzer
+    name: Analyzer
+    description: "Critical thinker with expertise in information evaluation"
+    role: "Evaluate information quality and relevance"
+    goal: "Assess the quality, reliability, and relevance of research findings"
+    backstory: "A methodical analyst with a background in critical evaluation and fact-checking."
+    verbose: true
+    llm:
+      provider: ollama
+      model_name: mistral
+      temperature: 0.5
+    tools: []
+    prompt_template: |
+      {
+        "role": "Analyzer",
+        "goal": "Evaluate the quality and relevance of the research findings",
+        "instructions": "Review the research provided by the Researcher and evaluate it based on relevance, accuracy, comprehensiveness, and objectivity. Flag any information that seems questionable or needs verification.",
+        "input": {{researcher_output}},
+        "constraints": [
+          "Be objective in your assessment",
+          "Consider the reliability of information sources",
+          "Identify any gaps in the research"
+        ],
+        "output_format": "JSON with the following keys: evaluation_summary, quality_score, gaps_identified, verified_information"
+      }
+
+  - id: summarizer
+    name: Summarizer
+    description: "Skilled at distilling complex information into clear summaries"
+    role: "Create concise summaries of key findings"
+    goal: "Distill complex information into clear, accessible summaries"
+    backstory: "An expert communicator who can translate technical information into digestible content."
+    verbose: true
+    llm:
+      provider: ollama
+      model_name: mistral
+      temperature: 0.6
+    tools: []
+    prompt_template: |
+      {
+        "role": "Summarizer",
+        "goal": "Create concise summaries of key findings",
+        "instructions": "Based on the analyzed research, create a concise summary that captures the essential information about '{{topic}}'. Focus on making complex concepts accessible while maintaining accuracy.",
+        "input": {{analyzer_output}},
+        "constraints": [
+          "Keep the summary clear and concise",
+          "Prioritize the most important information",
+          "Maintain accuracy while simplifying concepts"
+        ],
+        "output_format": "JSON with the following keys: executive_summary, key_points, insights"
+      }
+
+  - id: editor
+    name: Editor
+    description: "Detail-oriented professional who ensures polished final documents"
+    role: "Format and structure the final output"
+    goal: "Create a well-structured, polished final document"
+    backstory: "A perfectionist editor with an eye for detail and a talent for clear communication."
+    verbose: true
+    llm:
+      provider: ollama
+      model_name: mistral
+      temperature: 0.4
+    tools: []
+    prompt_template: |
+      {
+        "role": "Editor",
+        "goal": "Format and structure the final output",
+        "instructions": "Take the summary and format it into a well-structured research report on '{{topic}}'. Ensure the document is professional, easy to navigate, and presents information in a logical flow.",
+        "input": {{summarizer_output}},
+        "constraints": [
+          "Maintain consistent formatting throughout",
+          "Ensure logical flow between sections",
+          "Correct any grammatical or spelling errors"
+        ],
+        "output_format": "Markdown document with clearly defined sections, including: title, executive summary, key concepts, current state, applications, challenges, future outlook"
+      }
+
+tasks:
+  - id: research_task
+    description: "Research {topic} and gather relevant information"
+    agent: researcher
+    expected_output: "Comprehensive research on the topic"
+    
+  - id: analysis_task
+    description: "Evaluate the quality and relevance of the research findings"
+    agent: analyzer
+    expected_output: "Analysis of research quality and relevance"
+    depends_on: [research_task]
+    
+  - id: summary_task
+    description: "Create a concise summary of the key findings"
+    agent: summarizer
+    expected_output: "Concise summary of key findings"
+    depends_on: [analysis_task]
+    
+  - id: editing_task
+    description: "Format and structure the final output"
+    agent: editor
+    expected_output: "Well-formatted final research report"
+    depends_on: [summary_task]
+
+workflow:
+  - task: research_task
+    inputs:
+      topic: "{topic}"
+  - task: analysis_task
+    inputs:
+      researcher_output: "{research_task.output}"
+  - task: summary_task
+    inputs:
+      analyzer_output: "{analysis_task.output}"
+  - task: editing_task
+    inputs:
+      summarizer_output: "{summary_task.output}"
+      topic: "{topic}"
