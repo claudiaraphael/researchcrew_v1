@@ -3,6 +3,8 @@ import yaml
 import os
 from crewai import Agent, Task, Crew
 from langchain.llms import Ollama
+import json
+
 
 def load_config(file_path):
     with open(file_path, 'r') as file:
