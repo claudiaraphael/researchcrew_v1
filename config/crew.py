@@ -1,21 +1,20 @@
-# Description: This file contains the code to create a crew of agents and tasks based on a configuration file.
 import yaml
-import os
 from crewai import Agent, Task, Crew
 from langchain.llms import Ollama
 import json
 
-
 def load_config(file_path):
+    """
+    Load and parse a YAML configuration file.
+    """
     with open(file_path, 'r') as file:
         return yaml.safe_load(file)
 
-# Chose model
 def create_agent(agent_config):
-    # Set up LLM based on config
+    """
+    Create an agent based on the provided configuration.
+    """
     llm = Ollama(model=agent_config['llm']['model_name'])
-    
-    # Create and return agent
     return Agent(
         role=agent_config['role'],
         goal=agent_config['goal'],
@@ -25,10 +24,10 @@ def create_agent(agent_config):
     )
 
 def create_task(task_config, agents_dict):
-    # Get the agent for this task
+    """
+    Create a task based on the provided configuration and agents dictionary.
+    """
     agent = agents_dict[task_config['agent']]
-    
-    # Create and return task
     return Task(
         description=task_config['description'],
         expected_output=task_config.get('expected_output', ''),
@@ -36,13 +35,16 @@ def create_task(task_config, agents_dict):
     )
 
 def create_crew(topic):
-    # Load configuration
-    config = load_config('agents.yaml')
-    tasks_config = load_config('Tasks.yaml')
+    """
+    Create the crew by loading configurations, creating agents, and setting up tasks.
+    """
+    # Load configuration files
+    agents_config = load_config('agents.yaml')  # Load agents.yaml
+    tasks_config = load_config('Tasks.yaml')    # Load Tasks.yaml
     
     # Create agents
     agents_dict = {}
-    for agent_config in config['agents']:
+    for agent_config in agents_config['agents']:
         agents_dict[agent_config['id']] = create_agent(agent_config)
     
     # Create tasks
@@ -60,6 +62,9 @@ def create_crew(topic):
     return research_crew
 
 def run_crew(topic):
+    """
+    Run the crew with the given topic.
+    """
     crew = create_crew(topic)
     result = crew.kickoff(inputs={"topic": topic})
     print(result)
