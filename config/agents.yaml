@@ -13,8 +13,10 @@ agents:
     verbose: true
     llm:
       provider: ollama
-      model_name: mistral
+      model_name: "gemma:2b"
       temperature: 0.7
+      context_window: 4096
+      max_tokens: 1024
     tools: []
     prompt_template: |
       {
@@ -38,8 +40,10 @@ agents:
     verbose: true
     llm:
       provider: ollama
-      model_name: mistral
+      model_name: "gemma:2b"
       temperature: 0.5
+      context_window: 4096
+      max_tokens: 1024
     tools: []
     prompt_template: |
       {
@@ -64,8 +68,10 @@ agents:
     verbose: true
     llm:
       provider: ollama
-      model_name: mistral
+      model_name: "gemma:2b"
       temperature: 0.6
+      context_window: 4096
+      max_tokens: 1024
     tools: []
     prompt_template: |
       {
@@ -90,8 +96,10 @@ agents:
     verbose: true
     llm:
       provider: ollama
-      model_name: mistral
+      model_name: "gemma:2b"
       temperature: 0.4
+      context_window: 4096
+      max_tokens: 768
     tools: []
     prompt_template: |
       {
