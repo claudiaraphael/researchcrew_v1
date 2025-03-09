@@ -1,0 +1,43 @@
+# Tasks Configuration
+version: 1.0
+name: ResearchTasks
+description: "Tasks for the research crew to execute."
+
+tasks:
+  - id: research_task
+    description: "Research {topic} and gather relevant information"
+    agent: researcher
+    expected_output: "Comprehensive research on the topic"
+    
+  - id: analysis_task
+    description: "Evaluate the quality and relevance of the research findings"
+    agent: analyzer
+    expected_output: "Analysis of research quality and relevance"
+    depends_on: [research_task]
+    
+  - id: summary_task
+    description: "Create a concise summary of the key findings"
+    agent: summarizer
+    expected_output: "Concise summary of key findings"
+    depends_on: [analysis_task]
+    
+  - id: editing_task
+    description: "Format and structure the final output"
+    agent: editor
+    expected_output: "Well-formatted final research report"
+    depends_on: [summary_task]
+
+workflow:
+  - task: research_task
+    inputs:
+      topic: "{topic}"
+  - task: analysis_task
+    inputs:
+      researcher_output: "{research_task.output}"
+  - task: summary_task
+    inputs:
+      analyzer_output: "{analysis_task.output}"
+  - task: editing_task
+    inputs:
+      summarizer_output: "{summary_task.output}"
+      topic: "{topic}"
