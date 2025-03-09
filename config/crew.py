@@ -1,4 +1,6 @@
+# Description: This file contains the code to create a crew of agents and tasks based on a configuration file.
 import yaml
+import os
 from crewai import Agent, Task, Crew
 from langchain.llms import Ollama
 
@@ -6,6 +8,7 @@ def load_config(file_path):
     with open(file_path, 'r') as file:
         return yaml.safe_load(file)
 
+# Chose model
 def create_agent(agent_config):
     # Set up LLM based on config
     llm = Ollama(model=agent_config['llm']['model_name'])
