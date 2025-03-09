@@ -13,14 +13,24 @@ def create_agent(agent_config):
     """
     Create an agent based on the provided configuration.
     """
-    llm = Ollama(model=agent_config['llm']['model_name'])
+    # Configure Ollama with Gemma-2B model
+    llm = Ollama(
+        model="gemma:2b",  # This is the model name for Gemma-2B in Ollama
+        temperature=agent_config['llm'].get('temperature', 0.7),  # Add temperature parameter
+        num_ctx=agent_config['llm'].get('context_window', 4096),  # Add context window size
+        num_predict=agent_config['llm'].get('max_tokens', 1024)   # Add max tokens to generate
+    )
+    
     return Agent(
         role=agent_config['role'],
         goal=agent_config['goal'],
         backstory=agent_config['backstory'],
         verbose=agent_config.get('verbose', True),
-        llm=llm
+        llm=llm,
+        allow_delegation=agent_config.get('allow_delegation', True)  # Optional: enable agent delegation
     )
+
+
 
 def create_task(task_config, agents_dict):
     """

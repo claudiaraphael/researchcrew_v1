@@ -5,7 +5,7 @@ description: "A crew of agents for researching, analyzing, summarizing, and form
 
 agents:
   - id: researcher
-    name: Researcher
+    name: Researcher Specialist
     description: "Expert at discovering relevant information from various sources"
     role: "Find comprehensive information on the given topic"
     goal: "Gather accurate and comprehensive information on specific topics"
