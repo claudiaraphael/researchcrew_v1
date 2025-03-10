@@ -23,6 +23,8 @@ def create_agent(agent_config):
         backstory=agent_config['backstory'],
         verbose=agent_config.get('verbose', True),
         llm=llm
+        base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+
     )
 
 def create_task(task_config, agents_dict):

@@ -20,10 +20,10 @@ def create_agent(agent_config):
     """
     # Configure Ollama with gemma:2b model by default
     llm = Ollama(
-        model="gemma:2b",  # Default to gemma:2b, even if the config specifies something else
-        temperature=agent_config['llm'].get('temperature', 0.7)
+        model="gemma:2b",
+        temperature=agent_config['llm'].get('temperature', 0.7),
+        base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     )
-    
     return Agent(
         role=agent_config['role'],
         goal=agent_config['goal'],
