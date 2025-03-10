@@ -1,6 +1,6 @@
 import yaml
 from crewai import Agent, Task, Crew
-from langchain_community.llms import Ollama  # Import Ollama from langchain_community
+from langchain_ollama import OllamaLLM  # Updated import
 import os
 from dotenv import load_dotenv
 
@@ -18,8 +18,8 @@ def create_agent(agent_config):
     """
     Create an agent based on the provided configuration.
     """
-    # Configure Ollama with gemma:2b model by default
-    llm = Ollama(
+    # Configure OllamaLLM with gemma:2b model by default
+    llm = OllamaLLM(
         model="gemma:2b",
         temperature=agent_config['llm'].get('temperature', 0.7),
         base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
