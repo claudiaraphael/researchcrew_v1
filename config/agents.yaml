@@ -13,7 +13,7 @@ agents:
     verbose: true
     llm:
       provider: ollama
-      model_name: mistral
+      model_name: "gemma:2b"
       temperature: 0.7
     tools: []
     prompt_template: |
@@ -38,7 +38,7 @@ agents:
     verbose: true
     llm:
       provider: ollama
-      model_name: mistral
+      model_name: "gemma:2b"
       temperature: 0.5
     tools: []
     prompt_template: |
@@ -64,7 +64,7 @@ agents:
     verbose: true
     llm:
       provider: ollama
-      model_name: mistral
+      model_name: "gemma:2b"
       temperature: 0.6
     tools: []
     prompt_template: |
@@ -90,7 +90,7 @@ agents:
     verbose: true
     llm:
       provider: ollama
-      model_name: mistral
+      model_name: "gemma:2b"
       temperature: 0.4
     tools: []
     prompt_template: |
