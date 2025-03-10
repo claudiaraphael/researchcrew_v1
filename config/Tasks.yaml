@@ -3,7 +3,7 @@ version: 1.0
 name: ResearchTasks
 description: "Tasks for the research crew to execute."
 
-tasks:
+tasks:  
   - id: research_task
     description: "Research {topic} and gather relevant information"
     agent: researcher
