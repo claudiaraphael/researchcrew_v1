@@ -2,6 +2,7 @@ import yaml
 from crewai import Agent, Task, Crew
 from langchain_community.llms import Ollama  # Update import
 import json
+import os  # Add missing import
 
 def load_config(file_path):
     """
@@ -22,9 +23,7 @@ def create_agent(agent_config):
         goal=agent_config['goal'],
         backstory=agent_config['backstory'],
         verbose=agent_config.get('verbose', True),
-        llm=llm
         base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-
     )
 
 def create_task(task_config, agents_dict):
