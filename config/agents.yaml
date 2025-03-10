@@ -14,7 +14,153 @@ agents:
     llm:
       provider: ollama
       model_name: "gemma:2b"
+      temperature: 0.7# Research Crew Configuration
+version: 1.0
+name: ResearchCrew
+description: "A crew of agents for researching, analyzing, summarizing, and formatting information on agentic workflow design."
+
+agents:
+  - id: researcher
+    name: Researcher
+    description: "Expert at discovering relevant information on agentic workflow design"
+    role: "Find comprehensive information on agentic workflow design"
+    goal: "Gather accurate and comprehensive information on agentic workflow patterns and best practices"
+    backstory: "An experienced research specialist with a focus on AI systems and agent-based architectures."
+    verbose: true
+    llm:
+      provider: ollama
+      model_name: mistral
       temperature: 0.7
+    tools: []
+    prompt_template: |
+      {
+        "role": "Researcher",
+        "goal": "Find comprehensive information on agentic workflow design",
+        "instructions": "Your task is to gather relevant information on 'agentic workflow design'. Focus on key concepts, frameworks, implementation strategies, and best practices. Include information on agent roles, communication patterns, and orchestration approaches.",
+        "constraints": [
+          "Ensure information is factual and up-to-date",
+          "Cover multiple approaches to designing agentic workflows",
+          "Include practical examples where possible"
+        ],
+        "output_format": "JSON with the following keys: key_concepts, frameworks, implementation_strategies, best_practices, examples"
+      }
+
+  - id: analyzer
+    name: Analyzer
+    description: "Critical thinker with expertise in evaluating agentic systems"
+    role: "Evaluate information quality and relevance to agentic workflow design"
+    goal: "Assess the quality, reliability, and practical applicability of research findings"
+    backstory: "A methodical analyst with experience in designing and evaluating multi-agent systems."
+    verbose: true
+    llm:
+      provider: ollama
+      model_name: mistral
+      temperature: 0.5
+    tools: []
+    prompt_template: |
+      {
+        "role": "Analyzer",
+        "goal": "Evaluate the quality and relevance of the research findings on agentic workflow design",
+        "instructions": "Review the research provided by the Researcher and evaluate it based on practical relevance, technical accuracy, and implementation feasibility. Identify patterns and principles that work across different agent architectures.",
+        "input": {{researcher_output}},
+        "constraints": [
+          "Be objective in your assessment",
+          "Consider both theoretical soundness and practical applicability",
+          "Identify any gaps in the research related to real-world implementation"
+        ],
+        "output_format": "JSON with the following keys: evaluation_summary, practical_insights, implementation_challenges, recommended_approaches"
+      }
+
+  - id: summarizer
+    name: Summarizer
+    description: "Skilled at distilling complex information about agent systems into clear summaries"
+    role: "Create concise summaries of key findings on agentic workflow design"
+    goal: "Distill complex technical information into clear, actionable guidelines"
+    backstory: "An expert communicator who specializes in making complex AI concepts accessible to developers."
+    verbose: true
+    llm:
+      provider: ollama
+      model_name: mistral
+      temperature: 0.6
+    tools: []
+    prompt_template: |
+      {
+        "role": "Summarizer",
+        "goal": "Create concise summaries of key findings on agentic workflow design",
+        "instructions": "Based on the analyzed research, create a concise summary that captures the essential information about effective agentic workflow design. Focus on practical insights and actionable recommendations.",
+        "input": {{analyzer_output}},
+        "constraints": [
+          "Keep the summary clear and applicable to real implementations",
+          "Prioritize patterns and principles that developers can apply immediately",
+          "Balance theoretical foundations with practical applications"
+        ],
+        "output_format": "JSON with the following keys: executive_summary, design_principles, implementation_guidelines, common_pitfalls"
+      }
+
+  - id: editor
+    name: Editor
+    description: "Detail-oriented professional who ensures polished technical documentation"
+    role: "Format and structure the final output on agentic workflow design"
+    goal: "Create a well-structured, practical guide to designing effective agent workflows"
+    backstory: "A technical writer with experience in documenting AI systems and software architecture."
+    verbose: true
+    llm:
+      provider: ollama
+      model_name: mistral
+      temperature: 0.4
+    tools: []
+    prompt_template: |
+      {
+        "role": "Editor",
+        "goal": "Format and structure the final output on agentic workflow design",
+        "instructions": "Take the summary and format it into a well-structured practical guide on designing effective agentic workflows. Include diagrams descriptions where appropriate, practical code patterns, and a logical progression from basic concepts to advanced implementations.",
+        "input": {{summarizer_output}},
+        "constraints": [
+          "Organize content in a way that builds knowledge progressively",
+          "Include practical examples or templates where possible",
+          "Ensure the guide is useful for both beginners and experienced developers"
+        ],
+        "output_format": "Markdown document with clearly defined sections, including: title, executive summary, foundational concepts, workflow patterns, implementation guidelines, common pitfalls, advanced techniques, and practical examples"
+      }
+
+tasks:
+  - id: research_task
+    description: "Research agentic workflow design and gather relevant information"
+    agent: researcher
+    expected_output: "Comprehensive research on agentic workflow design"
+    
+  - id: analysis_task
+    description: "Evaluate the quality and relevance of the research findings"
+    agent: analyzer
+    expected_output: "Analysis of research quality and practical relevance"
+    depends_on: [research_task]
+    
+  - id: summary_task
+    description: "Create a concise summary of the key findings"
+    agent: summarizer
+    expected_output: "Concise summary of key principles and guidelines"
+    depends_on: [analysis_task]
+    
+  - id: editing_task
+    description: "Format and structure the final output"
+    agent: editor
+    expected_output: "Well-formatted practical guide to agentic workflow design"
+    depends_on: [summary_task]
+
+workflow:
+  - task: research_task
+    inputs:
+      topic: "agentic workflow design"
+  - task: analysis_task
+    inputs:
+      researcher_output: "{research_task.output}"
+  - task: summary_task
+    inputs:
+      analyzer_output: "{analysis_task.output}"
+  - task: editing_task
+    inputs:
+      summarizer_output: "{summary_task.output}"
+      topic: "agentic workflow design"
       context_window: 4096
       max_tokens: 1024
     tools: []
