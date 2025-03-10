@@ -1,3 +1,4 @@
 pyyaml
 crewai
 langchain
+langchain-community
