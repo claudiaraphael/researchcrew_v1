@@ -13,12 +13,10 @@ def create_agent(agent_config):
     """
     Create an agent based on the provided configuration.
     """
-    # Configure Ollama with Gemma-2B model
+    # Configure Ollama with gemma:2b model by default
     llm = Ollama(
-        model="gemma:2b",  # This is the model name for Gemma-2B in Ollama
-        temperature=agent_config['llm'].get('temperature', 0.7),  # Add temperature parameter
-        num_ctx=agent_config['llm'].get('context_window', 4096),  # Add context window size
-        num_predict=agent_config['llm'].get('max_tokens', 1024)   # Add max tokens to generate
+        model="gemma:2b",  # Default to gemma:2b, even if the config specifies something else
+        temperature=agent_config['llm'].get('temperature', 0.7)
     )
     
     return Agent(
@@ -27,10 +25,8 @@ def create_agent(agent_config):
         backstory=agent_config['backstory'],
         verbose=agent_config.get('verbose', True),
         llm=llm,
-        allow_delegation=agent_config.get('allow_delegation', True)  # Optional: enable agent delegation
+        allow_delegation=agent_config.get('allow_delegation', True)
     )
-
-
 
 def create_task(task_config, agents_dict):
     """
@@ -48,8 +44,8 @@ def create_crew(topic):
     Create the crew by loading configurations, creating agents, and setting up tasks.
     """
     # Load configuration files
-    agents_config = load_config('config/agents.yaml')  # Updated path for agents.yaml
-    tasks_config = load_config('config/tasks.yaml')           # Path for Tasks.yaml remains the same
+    agents_config = load_config('config/agents.yaml')
+    tasks_config = load_config('config/tasks.yaml')
     
     # Create agents
     agents_dict = {}
