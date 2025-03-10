@@ -1,8 +1,8 @@
 import yaml
 from crewai import Agent, Task, Crew
-from langchain_community.llms import Ollama  # Update import
+from langchain_ollama import OllamaLLM  # Updated import
 import json
-import os  # Add missing import
+import os
 
 def load_config(file_path):
     """
@@ -17,13 +17,16 @@ def create_agent(agent_config):
     """
     # Update to use gemma:2b as default if model_name is not specified
     model_name = agent_config['llm'].get('model_name', 'gemma:2b')
-    llm = Ollama(model=model_name)
+    llm = OllamaLLM(
+        model=model_name,
+        base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    )
     return Agent(
         role=agent_config['role'],
         goal=agent_config['goal'],
         backstory=agent_config['backstory'],
         verbose=agent_config.get('verbose', True),
-        base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+        llm=llm
     )
 
 def create_task(task_config, agents_dict):
