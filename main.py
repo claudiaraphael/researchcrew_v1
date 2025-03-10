@@ -1,6 +1,11 @@
 import yaml
 from crewai import Agent, Task, Crew
 from langchain_community.llms import Ollama  # Import Ollama from langchain_community
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 def load_config(file_path):
     """
