@@ -1,6 +1,6 @@
 import yaml
 from crewai import Agent, Task, Crew
-from langchain.llms import Ollama
+from langchain_community.llms import Ollama  # Update import
 import json
 
 def load_config(file_path):
@@ -14,7 +14,9 @@ def create_agent(agent_config):
     """
     Create an agent based on the provided configuration.
     """
-    llm = Ollama(model=agent_config['llm']['model_name'])
+    # Update to use gemma:2b as default if model_name is not specified
+    model_name = agent_config['llm'].get('model_name', 'gemma:2b')
+    llm = Ollama(model=model_name)
     return Agent(
         role=agent_config['role'],
         goal=agent_config['goal'],
@@ -39,8 +41,8 @@ def create_crew(topic):
     Create the crew by loading configurations, creating agents, and setting up tasks.
     """
     # Load configuration files
-    agents_config = load_config('config/agents.yaml')  # Load agents.yaml
-    tasks_config = load_config('config/tasks.yaml')    # Load Tasks.yaml
+    agents_config = load_config('config/agents.yaml')  # Update path
+    tasks_config = load_config('config/tasks.yaml')    # Update path
     
     # Create agents
     agents_dict = {}
