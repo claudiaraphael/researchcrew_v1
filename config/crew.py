@@ -39,8 +39,8 @@ def create_crew(topic):
     Create the crew by loading configurations, creating agents, and setting up tasks.
     """
     # Load configuration files
-    agents_config = load_config('agents.yaml')  # Load agents.yaml
-    tasks_config = load_config('Tasks.yaml')    # Load Tasks.yaml
+    agents_config = load_config('config/agents.yaml')  # Load agents.yaml
+    tasks_config = load_config('config/tasks.yaml')    # Load Tasks.yaml
     
     # Create agents
     agents_dict = {}
